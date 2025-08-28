@@ -1,0 +1,70 @@
+# Docker ignore file for MantisBT
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+docker/
+
+# Documentation
+*.md
+doc/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Logs
+*.log
+
+# Admin directory (will be removed during build, but needed for installation)
+# admin/
+
+# Tests
+tests/
+phpunit.xml
+
+# Development files
+composer.json
+composer.lock
+package.json
+package-lock.json
+node_modules/
+
+# Downloaded files and current sources (only use sources/ subdirectory)
+mantisbt-latest.tar.gz
+admin/
+api/
+config/
+core/
+css/
+fonts/
+images/
+js/
+lang/
+library/
+plugins/
+*.php
+*.txt
+*.html

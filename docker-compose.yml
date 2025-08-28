@@ -1,0 +1,54 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mantisbt_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mantisbt
+      MYSQL_USER: mantisbt
+      MYSQL_PASSWORD: mantisbt_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    networks:
+      - mantisbt_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "mantisbt", "-pmantisbt_password"]
+      timeout: 20s
+      retries: 10
+
+  mantisbt:
+    build: .
+    container_name: mantisbt_app
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./sources/config:/var/www/html/config:ro
+      - mantisbt_uploads:/var/www/html/uploads
+    networks:
+      - mantisbt_network
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    healthcheck:
+      test: ["CMD-SHELL", "php -r \"$$response = file_get_contents('http://localhost/'); if ($$response !== false && (strpos($$response, 'MantisBT') !== false || strpos($$response, 'Installation') !== false)) { echo 'OK'; exit(0); } exit(1);\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mysql_data:
+    driver: local
+  mantisbt_uploads:
+    driver: local
+
+networks:
+  mantisbt_network:
+    driver: bridge
