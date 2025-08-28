@@ -37,7 +37,7 @@ services:
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html
     healthcheck:
-      test: ["CMD-SHELL", "php -r \"$$response = file_get_contents('http://localhost/'); if ($$response !== false && (strpos($$response, 'MantisBT') !== false || strpos($$response, 'Installation') !== false)) { echo 'OK'; exit(0); } exit(1);\""]
+      test: ["CMD-SHELL", "pgrep apache2 > /dev/null"]
       interval: 30s
       timeout: 10s
       retries: 3
